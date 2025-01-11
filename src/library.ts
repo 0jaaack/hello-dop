@@ -1,10 +1,16 @@
-import Catalog from "./catalog.ts";
-import { UserManagement } from "./userMangement.ts";
+import Catalog, { CatalogData, catalogData } from "./catalog.ts";
+import { UserManagement, UserManagementData, userManagementData } from "./userMangement.ts";
+import { Book } from "./dataModels.ts";
 
-// 나중에 구현될 예정
-type libraryData = any;
-// 나중에 구현될 예정
-type BookItemInfo = any;
+export type LibraryData = {
+  catalog: CatalogData,
+  userManagement: UserManagementData,
+}
+
+export const libraryData = {
+  catalog: catalogData,
+  userManagement: userManagementData,
+} satisfies LibraryData;
 
 export default class Library {
   static getBookLendings(libraryData: LibraryData, userId: string, memberId: string) {
