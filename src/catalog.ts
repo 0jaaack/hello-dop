@@ -1,3 +1,4 @@
+import * as R from "npm:remeda";
 import { Book, Author } from "./dataModels.ts";
 
 export type CatalogData = {
@@ -38,12 +39,43 @@ export const catalogData = {
   },
 } satisfies CatalogData;
 
+type BookInfo = {
+  title: string;
+  isbn: string;
+  authorNames: string[];
+}
+
 export default class Catalog {
   static getBookLendings(catalogData: CatalogData, memberId: string) {
     // 나중에 구현될 예정
   }
 
-  static addBookItem(catalogData: CatalogData, bookItemInfo: BookItemInfo) {
+  static addBookItem(catalogData: CatalogData, book: Book) {
     // 나중에 구현될 예정
+  }
+
+  static authorNames(catalogData: CatalogData, book: Book): string[] {
+    return R.pipe(
+      R.pathOr(book, R.stringToPath("authorIds"), []),
+      R.map((authorId) => {
+        return R.pathOr(catalogData, R.stringToPath(`authorsById.${authorId}.name`), "");
+      }),
+    );
+  }
+
+  static bookInfo(catalogData: CatalogData, book: Book): BookInfo {
+    return {
+      title: R.pathOr(book, R.stringToPath("title"), ""),
+      isbn: R.pathOr(book, R.stringToPath("isbn"), ""),
+      authorNames: Catalog.authorNames(catalogData, book),
+    };
+  }
+
+  static searchBooksByTitle(catalogData: CatalogData, query: string): BookInfo[] {
+    return R.pipe(
+      R.values(catalogData.booksByIsbn),
+      R.filter((book) => R.pathOr(book, R.stringToPath("title"), "").includes(query)),
+      R.map((book) => Catalog.bookInfo(catalogData, book)),
+    );
   }
 }
