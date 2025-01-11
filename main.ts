@@ -7,7 +7,10 @@ type CatalogData = any;
 
 class Library {
   static getBookLendings(libraryData: libraryData, userId: string, memberId: string) {
-    if (UserManagement.isLibrarian(libraryData.userManagement, userId)) {
+    if (
+      UserManagement.isLibrarian(libraryData.userManagement, userId)
+      || UserManagement.isSuperMember(libraryData.userManagement, userId)
+    ) {
       return Catalog.getBookLendings(libraryData.catalog, memberId);
     } else {
       throw "대출된 도서를 조회할 권한이 없음";
@@ -17,6 +20,11 @@ class Library {
 
 class UserManagement {
   static isLibrarian(userManagementData: UserManagementData, userId: string): boolean {
+    // 나중에 구현될 예정
+    return false;
+  }
+
+  static isSuperMember(userManagementData: UserManagementData, userId: string): boolean {
     // 나중에 구현될 예정
     return false;
   }
